@@ -2,6 +2,42 @@
 
 Golang lib for handling function return codes
 
+## Exec Values
+
+```ruby
+*.Exec(CallerFunction(callerArgs...))...
+.
+├── Values
+│   │
+│   └── List: [CallerFunction Output (without the error if err not nil)]
+│
+├── CallBackFunc
+│   │
+│   └── Interace: interface{}
+│
+├── CallBackArgs
+│   │
+│   └── Interace Slice: []interface{}
+│
+├── CallBackValues
+│   │
+│   └── Interface{}
+│        │
+│        └── Append: ( CallerFunction Output + CallBackArgs )
+│
+│
+├── ErrCallBackValues
+│   │
+│   └── Interface{}
+│        │
+│        └── Append:( CallBackValues + ErrCallBackValues Output )
+│
+└── ErrCallBackValues
+    │
+    └── Interface*
+```
+
+
 ## Generic Example
 
 Here if Exec catches an error it will automatically do an os.Exit(1)
