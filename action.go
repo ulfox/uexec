@@ -5,7 +5,7 @@ type Action struct {
 	Values         []interface{}
 	CallBackFunc   interface{}
 	CallBackArgs   []interface{}
-	CallBackValues []interface{}
+	CallBackValues interface{}
 	Err            interface{}
 }
 
@@ -20,7 +20,7 @@ func (t Action) AddCallBack(callBackFunc interface{}, callBackArgs ...interface{
 // CallBack function for running after an error has been caught
 func (t Action) CallBack() Action {
 	switch fn := t.CallBackFunc.(type) {
-	case func(...interface{}) []interface{}:
+	case func(...interface{}) interface{}:
 		t.CallBackValues = fn(t.CallBackArgs...)
 	}
 	return t
