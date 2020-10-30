@@ -96,7 +96,7 @@ func (e *ErrorHandler) DelGenericCallBack() *ErrorHandler {
 func (e *ErrorHandler) CallBack() *ErrorHandler {
 	switch fn := e.callBackFunc.(type) {
 	case func(...interface{}) interface{}:
-		fn(e.callBackArgs)
+		e.action.ErrCallBackValues = fn(e.callBackArgs)
 	}
 	return e
 }
