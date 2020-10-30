@@ -41,7 +41,7 @@ func NewErrorHandler() *ErrorHandler {
 // AddGenericCallBack add a generic callback function that can run on Exec errors
 func (e *ErrorHandler) AddGenericCallBack(callBackFunc interface{}, callBackArgs ...interface{}) *ErrorHandler {
 	e.callBackFunc = callBackFunc
-	e.callBackArgs = callBackArgs
+	e.callBackArgs = append(e.callBackArgs, callBackArgs...)
 	e.enableGenericCallBack(true)
 	log.WithFields(logrus.Fields{
 		"Action": "AddGenericCallBack",
@@ -67,7 +67,7 @@ func (e *ErrorHandler) DelGenericCallBack() *ErrorHandler {
 // CallBack function for running after an error has been caught
 func (e *ErrorHandler) CallBack() *ErrorHandler {
 	switch fn := e.callBackFunc.(type) {
-	case func(...interface{}):
+	case func(...interface{}) interface{}:
 		fn(e.callBackArgs)
 	}
 	return e
@@ -178,6 +178,9 @@ func (e *ErrorHandler) Exec(cmd ...interface{}) Action {
 	}
 
 	e.action.CallBackArgs = append(e.action.CallBackArgs, cmd...)
+	callBackArgs := e.callBackArgs
+	e.callBackArgs = cmd
+	e.callBackArgs = append(e.callBackArgs, callBackArgs...)
 	e.getErr(cmd...)
 	e.getValues(cmd...)
 	e.checkE()
