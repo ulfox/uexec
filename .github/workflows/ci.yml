@@ -25,5 +25,11 @@ jobs:
       run: |
         go get -v -t -d ./...
 
+    - name: Get Lint
+      run: go get -u golang.org/x/lint/golint
+
+    - name: Lint
+      run: golint -set_exit_status ./...
+
     - name: Test
       run: go test -v .
