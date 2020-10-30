@@ -2,11 +2,12 @@ package uexec
 
 // Action holds the first return item
 type Action struct {
-	Values         []interface{}
-	CallBackFunc   interface{}
-	CallBackArgs   []interface{}
-	CallBackValues interface{}
-	Err            interface{}
+	Values            []interface{}
+	CallBackFunc      interface{}
+	CallBackArgs      []interface{}
+	CallBackValues    interface{}
+	ErrCallBackValues interface{}
+	Err               interface{}
 }
 
 // AddCallBack adds a callback function that can run on Exec errors
