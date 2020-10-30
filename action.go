@@ -26,6 +26,11 @@ func (t Action) CallBack() Action {
 	return t
 }
 
+// GetError returns the Err value
+func (t Action) GetError() interface{} {
+	return t.Err
+}
+
 // Get Returns a value
 func (t Action) Get(n int) interface{} {
 	return t.Values[n]
