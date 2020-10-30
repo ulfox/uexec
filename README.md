@@ -104,7 +104,7 @@ it takes any number of arguments and returns an interface
 
 First we initiate a new error handler **erH** and we execute **someFunction**.
 What follows after is the **AddCallBack** method which registers a function **someCallBackFunction** and
-its arguments **["A", "CallBack", "Function"]**. Last, we call the function callback method
+its arguments **["A", "CallBack", "Function"]**. Last, we call the callback method
 
 Output
 
@@ -165,7 +165,7 @@ Output:
 Note: Do not confuse the naming with the actual golang pointer. Here by pointer I mean the index from the returned values of the
 original action.
 
-Let's say a function retruns 3 values, from which none is a int pointer. If we want to handle the int pointer
+Let's say a function retruns 3 values, from which one is a int pointer. If we want to handle the int pointer
 as a possible error (ok when **nil**, error when integer is not **nil**)
 
 
