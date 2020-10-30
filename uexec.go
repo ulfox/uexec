@@ -1,7 +1,11 @@
 package uexec
 
 import (
+	"fmt"
 	"os"
+	"runtime"
+	"strconv"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -38,16 +42,43 @@ func NewErrorHandler() *ErrorHandler {
 	return errorHandler
 }
 
+func (e *ErrorHandler) logD(a, t string) {
+	m := fmt.Sprintf("%s modified successfully", a)
+	log.WithFields(logrus.Fields{
+		"Action": a,
+		"To":     t,
+	}).Debug(m)
+}
+
+func (e *ErrorHandler) logE(a, t string, messages []string) {
+	for _, m := range messages {
+		log.WithFields(logrus.Fields{
+			"Action": a,
+			"To":     t,
+		}).Error(m)
+	}
+
+}
+
+func (e *ErrorHandler) getFn() string {
+	pc, _, _, ok := runtime.Caller(0)
+	if !ok {
+		return "-"
+	}
+	ffn := runtime.FuncForPC(pc)
+	if ffn == nil {
+		return "-"
+	}
+	ffnS := strings.Split(ffn.Name(), "/")
+	return ffnS[len(ffnS)-1]
+}
+
 // AddGenericCallBack add a generic callback function that can run on Exec errors
 func (e *ErrorHandler) AddGenericCallBack(callBackFunc interface{}, callBackArgs ...interface{}) *ErrorHandler {
 	e.callBackFunc = callBackFunc
 	e.callBackArgs = append(e.callBackArgs, callBackArgs...)
 	e.enableGenericCallBack(true)
-	log.WithFields(logrus.Fields{
-		"Action": "AddGenericCallBack",
-		"To":     "-",
-	}).Debug("Generic CallBack added successfully")
-
+	defer e.logD(e.getFn(), "-")
 	return e
 }
 
@@ -56,10 +87,7 @@ func (e *ErrorHandler) DelGenericCallBack() *ErrorHandler {
 	e.callBackFunc = nil
 	e.callBackArgs = nil
 	e.enableGenericCallBack(false)
-	log.WithFields(logrus.Fields{
-		"Action": "DelGenericCallBack",
-		"To":     "-",
-	}).Debug("Generic CallBack deleted successfully")
+	defer e.logD(e.getFn(), "-")
 
 	return e
 }
@@ -76,20 +104,14 @@ func (e *ErrorHandler) CallBack() *ErrorHandler {
 // enableGenericCallBack for enabling / disabling globacl callback function
 func (e *ErrorHandler) enableGenericCallBack(l bool) *ErrorHandler {
 	e.enableGCB = l
-	log.WithFields(logrus.Fields{
-		"Action": "EnableReportCaller",
-		"To":     l,
-	}).Debug("ReportCaller has been changed")
+	defer e.logD(e.getFn(), "1")
 	return e
 }
 
 // SetElasticity for changing the Elasticity of ErrorHandler
 func (e *ErrorHandler) SetElasticity(el bool) *ErrorHandler {
 	e.elasticity = el
-	log.WithFields(logrus.Fields{
-		"Action": "SetElasticity",
-		"To":     el,
-	}).Debug("SetElasticity has been changed")
+	defer e.logD(e.getFn(), strconv.FormatBool(el))
 	return e
 }
 
@@ -109,20 +131,15 @@ func (e *ErrorHandler) SetLogLevel(l string) *ErrorHandler {
 	default:
 		log.SetLevel(logrus.InfoLevel)
 	}
-	log.WithFields(logrus.Fields{
-		"Action": "SetLogLevel",
-		"To":     l,
-	}).Debug("LogLevel has been changed")
+	defer e.logD(e.getFn(), l)
 	return e
 }
 
 // EnableReportCaller for enabling / disabling reportcaller of logrus
 func (e *ErrorHandler) EnableReportCaller(l bool) *ErrorHandler {
 	log.SetReportCaller(l)
-	log.WithFields(logrus.Fields{
-		"Action": "EnableReportCaller",
-		"To":     l,
-	}).Debug("ReportCaller has been changed")
+	defer e.logD(e.getFn(), strconv.FormatBool(l))
+
 	return e
 }
 
@@ -140,24 +157,21 @@ func (e *ErrorHandler) OnErr(a string) *ErrorHandler {
 	case "callback":
 		if !e.enableGCB {
 			e.onErAction = "exit"
-			log.WithFields(logrus.Fields{
-				"Action": "OnErr",
-				"To":     "exit",
-			}).Error("Has not been changed. Please add a callback function before you do this")
-			log.WithFields(logrus.Fields{
-				"Action": "OnErr",
-				"To":     "exit",
-			}).Error("OnErr is set to exit. Any error will cause a program exit 1")
+			e.logE(
+				e.getFn(),
+				"-",
+				[]string{
+					"Has not been changed. Please add a callback function before you do this",
+					"OnErr is set to exit. Any error will cause a program exit 1",
+				},
+			)
 			return e
 		}
 		e.onErAction = a
 	default:
 		e.onErAction = "exit"
 	}
-	log.WithFields(logrus.Fields{
-		"Action": "OnErr",
-		"To":     a,
-	}).Debug("OnErr has been changed")
+	defer e.logD(e.getFn(), a)
 	return e
 }
 
@@ -170,10 +184,11 @@ func (e *ErrorHandler) Exec(cmd ...interface{}) Action {
 	}
 
 	if len(cmd)-1 < e.erP {
-		log.WithFields(logrus.Fields{
-			"Action": "Exec",
-			"Status": "-",
-		}).Error("The Error Pointer, points to a none existant cmd index")
+		e.logE(
+			e.getFn(),
+			"-",
+			[]string{"The Error Pointer, points to a none existant cmd index"},
+		)
 		os.Exit(1)
 	}
 
