@@ -32,7 +32,7 @@ Golang lib for handling function return codes
 │        │
 │        └── Append:( CallBackValues + ErrCallBackValues Output )
 │
-└── ErrCallBackValues
+└── Err
     │
     └── Interface*
 ```
