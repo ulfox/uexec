@@ -27,8 +27,8 @@ func (t Action) CallBack() Action {
 }
 
 // GetError returns the Err value
-func (t Action) GetError() interface{} {
-	return t.Err
+func (t Action) GetError(n int) error {
+	return t.Values[n].(error)
 }
 
 // Get Returns a value
