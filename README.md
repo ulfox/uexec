@@ -41,8 +41,8 @@ Marshal version into a struct
         try := uexec.NewErrorHandler()
         try.Exec(
             json.Unmarshal(
-                try.Exec(ioutil.ReadFile("config.json")
-            ).ByteS(0), &state)
+                try.Exec(ioutil.ReadFile("config.json"),
+            ).ByteS(0),&state),
         )
         fmt.Println(state)
     }
