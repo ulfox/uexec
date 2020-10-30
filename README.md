@@ -104,7 +104,7 @@ it takes any number of arguments and returns an interface
 
 First we initiate a new error handler **erH** and we execute **someFunction**.
 What follows after is the **AddCallBack** method which registers a function **someCallBackFunction** and
-its arguments **["A", "CallBack", "Function"]**. Last, we call the function callback function
+its arguments **["A", "CallBack", "Function"]**. Last, we call the function callback method
 
 Output
 
@@ -114,11 +114,11 @@ Output
 
 The first line after we run the code is the 3 output from **someFunction**.
 The second line has:
- - **output.Values**: [a 0 1 <nil>]
+ - **output.Values**: [a 0 1 nil]
  - **output.CallBackFunc**: 0x4d2260
- - **output.CallBackArgs**: [a 0 1 <nil> A CallBack Function]
+ - **output.CallBackArgs**: [a 0 1 nil A CallBack Function]
  - **output.CallBackValues**: 0
- - **output.Err**: <nil>
+ - **output.Err**: nil
 
 
 ### Elasticity
@@ -160,9 +160,13 @@ Output:
     1   {"level":"error","msg":"someError","time":"2020-10-30T03:40:13+02:00"}
     2   someError
 
-### Error Point - Define your error manually
+### Error Pointer (ErP) - Define your error manually
 
-Let's say a function retruns 3 values, from which none is an error.
+Note: Do not confuse the naming with the actual golang pointer. Here by pointer I mean the index from the returned values of the
+original action.
+
+Let's say a function retruns 3 values, from which none is a int pointer. If we want to handle the int pointer
+as a possible error (ok when **nil**, error when integer is not **nil**)
 
 
     package main
@@ -194,7 +198,7 @@ Let's say a function retruns 3 values, from which none is an error.
 Notice that above we are returning 3 pointers.
 
 The above example will cause an error because we are using **.ErP(2)** which instructs **Exec**
-to check the index 2 (3rd) value and log an error in case that is not **<nil>**
+to check the index 2 (3rd) value and log an error in case that is anything else than **nil**
 
 Output:
 
