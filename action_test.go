@@ -18,7 +18,7 @@ func someCallback(args ...interface{}) interface{} {
 }
 
 //TestOutputs run unit tests on action outputs
-func testOutputs(t *testing.T) {
+func TestOutputs(t *testing.T) {
 	t.Parallel()
 
 	erH := NewErrorHandler().SetLogLevel("trace").
