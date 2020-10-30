@@ -230,12 +230,12 @@ func (e *ErrorHandler) checkE() {
 		return
 	}
 
-	e.Logger.Error(e.action.Err)
 	e.errAction()
 }
 
 func (e *ErrorHandler) errAction() {
 	if e.onErAction == "exit" {
+		e.Logger.Error(e.action.Err)
 		if !e.elasticity {
 			os.Exit(1)
 		}
