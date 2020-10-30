@@ -29,9 +29,10 @@ type ErrorHandler struct {
 // NewErrorHandler factory method to create a new errorhandler
 func NewErrorHandler() *ErrorHandler {
 	errorHandler := &ErrorHandler{
-		Logger: log,
-		action: Action{},
-		erP:    -1,
+		Logger:     log,
+		action:     Action{},
+		erP:        -1,
+		onErAction: "exit",
 	}
 
 	return errorHandler
